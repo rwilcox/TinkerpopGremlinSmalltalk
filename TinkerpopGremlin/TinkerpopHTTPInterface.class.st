@@ -1,3 +1,10 @@
+"
+Class: I exist to interface with the gremlin data store using the HTTP interface
+
+Responsibility part: In addition to sending Gremlin commands to the server I also deserialize responses to basic Smalltalk objects.
+
+For the Collaborators Part: execute* instance methods will return a TinkerpopHTTPResult, or ErrorGremlinStacktrace objects.
+"
 Class {
 	#name : #TinkerpopHTTPInterface,
 	#superclass : #Object,
@@ -18,7 +25,7 @@ TinkerpopHTTPInterface >> connectionURL: anObject [
 ]
 
 { #category : #'as yet unclassified' }
-TinkerpopHTTPInterface >> executeAndReturnRawGremlin: gremlinStr [
+TinkerpopHTTPInterface >> executeGremlin: gremlinStr [
 	|dataJson rawResult jsonStr dataEntity res|
 	
 	dataJson := (Dictionary
@@ -33,31 +40,18 @@ TinkerpopHTTPInterface >> executeAndReturnRawGremlin: gremlinStr [
 ]
 
 { #category : #'as yet unclassified' }
-TinkerpopHTTPInterface >> executeGremlin: gremlinStr [
-	| rawResult result rawGraphData processedGraphData |
-	rawResult := self executeAndReturnRawGremlin: gremlinStr.
+TinkerpopHTTPInterface >> executeRawGremlin: gremlinStr withBindings: graphCommandBindingsDict [
+	|dataJson jsonStr dataEntity res|
 	
-	(rawResult at: #exceptions)	ifNotNil: [ result := ErrorGremlinStacktrace new.
-			result javaExceptionMessage: (rawResult at: #message).
-			result javaStacktrace: (rawResult at: #stackTrace).
-			^ result ].
-	
-	result := TinkerpopHTTPResult new.
-	result statusCode: (rawResult atPath: {#status . #code}).
-	rawGraphData := rawResult atPath: {#result . #data . '@value'}.
-	processedGraphData := rawGraphData
-		collect: [ :currElement | 
-			| type output |
-			type := currElement at: '@type'.
+	dataJson := (Dictionary
+				newFromPairs:
+					{
+					'gremlin'.  gremlinStr.
+					'bindings'. graphCommandBindingsDict . 
+					}).
+	jsonStr := STONJSON toString: dataJson.		
+	dataEntity := ZnEntity with: jsonStr type: ZnMimeType applicationJson.	
 			
-			"who says Smalltalk doesn't have pattern matching?? ;)"
-			type = 'g:Vertex'         ifTrue: [ output := Vertex buildFromNeoJSONObject: currElement ].
-			type = 'g:VertexProperty' ifTrue: [ output := VertexProperty buildFromNeoJSONObject: currElement ].
-			type = 'g:Edge'           ifTrue: [ output := Edge buildFromNeoJSONObject: currElement ].
-			type = 'g:Property'       ifTrue: [ output := EdgeProperty buildFromNeoJSONObject: currElement ].
-			
-			output ].
-	result resultGraph: processedGraphData.
-	result rawResultGraph: rawGraphData.
-	^ result
+	res := ZnEasy post: connectionURL data: dataEntity.
+	^ NeoJSONObject fromString: res entity.
 ]
