@@ -42,3 +42,17 @@ Vertex >> label [
 Vertex >> label: anObject [
 	label := anObject
 ]
+
+{ #category : #'as yet unclassified' }
+Vertex >> toRSComposite [
+	"Creates a Roassal 3 composit with a box and a label"
+			
+	| rslabel box|
+	
+	rslabel := RSLabel new text: label yourself.
+	box := RSBox new withBorder; extent: rslabel extent + 10.
+	
+	^ RSComposite new draggable;
+	model: self; shapes: {  box. rslabel }.
+	
+]
