@@ -40,7 +40,7 @@ TinkerpopHTTPInterface >> executeGremlin: gremlinStr [
 ]
 
 { #category : #'as yet unclassified' }
-TinkerpopHTTPInterface >> executeRawGremlin: gremlinStr withBindings: graphCommandBindingsDict [
+TinkerpopHTTPInterface >> executeGremlin: gremlinStr withBindings: graphCommandBindingsDict [
 	|dataJson jsonStr dataEntity res|
 	
 	dataJson := (Dictionary
