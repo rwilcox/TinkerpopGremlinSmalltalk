@@ -55,3 +55,18 @@ TinkerpopHTTPInterface >> executeGremlin: gremlinStr withBindings: graphCommandB
 	res := ZnEasy post: connectionURL data: dataEntity.
 	^ NeoJSONObject fromString: res entity.
 ]
+
+{ #category : #'as yet unclassified' }
+TinkerpopHTTPInterface >> executeGremlin: gStr withBindingsLiteral: arrayLiteral [
+	"Instead of doing
+	
+	executeGremlin: 'g.V(whatLabel)' withBindings: Dictionary newFrom: { #whatLabel -> foo }
+	
+	do
+	
+	executeGremlin: 'g.V(whatLabel)' withBindingsLiteral: { #whatLabel -> foo }
+	
+	saved you a phrase
+	"
+	^ self executeGremlin: gStr withBindings: (Dictionary newFrom: arrayLiteral).
+]
