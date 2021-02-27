@@ -63,3 +63,15 @@ TinkerpopGremlinResultBaseRepository >> deserializeVertex: currElement [
 TinkerpopGremlinResultBaseRepository >> deserialzeVertexProperties: currElement [
 	^ VertexProperty buildFromNeoJSONObject: currElement
 ]
+
+{ #category : #'as yet unclassified' }
+TinkerpopGremlinResultBaseRepository >> findAllVerticesWithLabel: label withInterface: interface [
+	"comment stating purpose of instance-side message"
+	"scope: class-variables  &  instance-variables"	
+			
+	| res |
+	
+  res := interface executeGremlin: 'g.V().hasLabel(inlabel)' withBindingsLiteral: { #inlabel -> label }.
+	
+  ^ self deserialize: res.
+]
