@@ -3,7 +3,11 @@ Class: A TinkerpopGremlinResultBaseRepository deserializes results from the Tink
 
 Responsibility part: I should deserialize JSON, probably eventually serialize JSON, and at the very least provide a base class for those that Know What They Are Doing And Just Want To Serialize thing X in Y way.
 
-This might be more coupled than I'd like to being a repository pattern for HTTP results, but I'm hoping that it will work equally well for HTTP interface as the websockets interface. (And if it doesn't work for your scenario, patches welcome...)
+This might be more coupled than I'd like to being a repository pattern for HTTP results, but I'm hoping that it will work equally well for HTTP interface as the websockets interface. (And if it doesn't work for your scenario, patches welcome...).
+
+Most of my raw Gremlin should be passed in via a GremlinQueryBuilder, which couples the raw gremlin with its parameters (or, in the case of some future theoretical AmazonNeptuneQueryBuilder) inserts the parameters directly (Neptune doesn't support bindings).
+
+This is the object construction part of the ORM.
 "
 Class {
 	#name : #TinkerpopGremlinResultBaseRepository,
@@ -65,13 +69,19 @@ TinkerpopGremlinResultBaseRepository >> deserialzeVertexProperties: currElement 
 ]
 
 { #category : #'as yet unclassified' }
-TinkerpopGremlinResultBaseRepository >> findAllVerticesWithLabel: label withInterface: interface [
+TinkerpopGremlinResultBaseRepository >> executeBuilder: gremlinQueryBuilder withInterface: interface [
 	"comment stating purpose of instance-side message"
 	"scope: class-variables  &  instance-variables"	
 			
 	| res |
 	
-  res := interface executeGremlin: 'g.V().hasLabel(inlabel)' withBindingsLiteral: { #inlabel -> label }.
-	
+	gremlinQueryBuilder queryBinding ifNil: [ 
+		res := interface executeGremlin: (gremlinQueryBuilder queryString).
+		
+  ] ifNotNil: [ 
+		res := interface executeGremlin: (gremlinQueryBuilder queryString)
+		                 withBindings: (gremlinQueryBuilder queryDictionary ).
+ ].
+
   ^ self deserialize: res.
 ]

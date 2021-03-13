@@ -4,6 +4,8 @@ Class: I exist to interface with the gremlin data store using the HTTP interface
 Responsibility part: In addition to sending Gremlin commands to the server I also deserialize responses to basic Smalltalk objects.
 
 For the Collaborators Part: execute* instance methods will return a TinkerpopHTTPResult, or ErrorGremlinStacktrace objects.
+
+This is the ""talk to the data store"" part of the ORM.
 "
 Class {
 	#name : #TinkerpopHTTPInterface,
