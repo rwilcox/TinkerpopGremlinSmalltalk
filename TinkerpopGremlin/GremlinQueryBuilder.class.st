@@ -14,6 +14,20 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
+GremlinQueryBuilder class >> createVertexWithLabel: label [
+	"comment stating purpose of class-side message"
+	"scope: class-variables  &  class-instance-variables"	
+			
+	|out|
+	
+   out := GremlinQueryBuilder new.
+
+   out queryString: 'g.addV(newVertexLabel)'; queryBinding: { #newVertexLabel -> label }.
+
+  ^ out.
+]
+
+{ #category : #'as yet unclassified' }
 GremlinQueryBuilder class >> findWithLabel: label [
 	|out|
 	

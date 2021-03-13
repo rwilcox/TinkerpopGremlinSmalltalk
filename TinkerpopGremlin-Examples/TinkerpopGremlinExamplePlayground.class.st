@@ -54,11 +54,8 @@ TinkerpopGremlinExamplePlayground class >> createVertexExampleComplex [
 	b := TinkerpopGremlinResultBaseRepository new.
 	a connectionURL: 'http://localhost:8182'.
 	
-	q := GremlinQueryBuilder new.
-	q queryString: 'g.addV(lang)'.
+	q := GremlinQueryBuilder createVertexWithLabel: 'Ruby'.
 	q propertyName: 'domaingraph' withValue: 'tinkerpopexample'.
-	
-	q queryBinding: { #lang -> 'Groovy' }.
 	
 	res := b executeBuilder: q withInterface: a. 
 	
