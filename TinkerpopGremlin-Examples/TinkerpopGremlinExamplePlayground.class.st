@@ -98,6 +98,40 @@ TinkerpopGremlinExamplePlayground class >> findAllVerticesWithLabelsWithProperty
 ]
 
 { #category : #'as yet unclassified' }
+TinkerpopGremlinExamplePlayground class >> gremlinQueryPlayground [
+	"comment stating purpose of class-side message"
+	"scope: class-variables  &  class-instance-variables"	
+	
+	| playground wsBindings a b q|
+	
+	a := TinkerpopHTTPInterface new.
+	b := TinkerpopGremlinResultBaseRepository new.
+	a connectionURL: 'http://localhost:8182'.
+	
+   q := GremlinQueryBuilder new.
+
+	wsBindings := Dictionary newFrom: { #a-> a. #b -> b. #q -> q }.
+	playground := Smalltalk tools workspace
+		openContents: 'q queryString: ''g.V()''. 
+		
+b executeBuilder: q withInterface: a.'.
+	playground
+		setBindings: wsBindings.
+	
+]
+
+{ #category : #'world menu' }
+TinkerpopGremlinExamplePlayground class >> menuCommandOn: aBuilder [
+	
+	<worldMenu>
+	(aBuilder item: #'Gremlin Playground')
+		order: 901;
+		parent: #Tools;
+		help: 'Opens up a playground with TinkerpopGremlin classes bound, perfect for exploration';
+		action: [ TinkerpopGremlinExamplePlayground gremlinQueryPlayground  ]
+]
+
+{ #category : #'as yet unclassified' }
 TinkerpopGremlinExamplePlayground class >> updateVertexExample [
 	"comment stating purpose of class-side message"
 	"scope: class-variables  &  class-instance-variables"	
