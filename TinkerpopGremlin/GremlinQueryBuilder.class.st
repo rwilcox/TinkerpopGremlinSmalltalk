@@ -28,7 +28,21 @@ GremlinQueryBuilder class >> createVertexWithLabel: label [
 ]
 
 { #category : #'as yet unclassified' }
-GremlinQueryBuilder class >> findWithLabel: label [
+GremlinQueryBuilder class >> findEdgesWithLabel: label [
+	"comment stating purpose of class-side message"
+	"scope: class-variables  &  class-instance-variables"	
+			
+	|out|
+	
+   out := GremlinQueryBuilder new.
+
+   out queryString: 'g.E().hasLabel(inLabel)'; queryBinding: { #inLabel -> label }.
+
+  ^ out.
+]
+
+{ #category : #'as yet unclassified' }
+GremlinQueryBuilder class >> findVerticesWithLabel: label [
 	|out|
 	
    out := GremlinQueryBuilder new.

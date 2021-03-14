@@ -74,7 +74,7 @@ TinkerpopGremlinExamplePlayground class >> findAllVerticesWithLabelExample [
 	b := TinkerpopGremlinResultBaseRepository new.
 	a connectionURL: 'http://localhost:8182'.
 	
-	q := GremlinQueryBuilder findWithLabel: 'Smalltalk'.
+	q := GremlinQueryBuilder findVerticesWithLabel: 'Smalltalk'.
 	^ b executeBuilder: q withInterface: a.
 	
 ]
@@ -91,7 +91,7 @@ TinkerpopGremlinExamplePlayground class >> findAllVerticesWithLabelsWithProperty
 	b := TinkerpopGremlinResultBaseRepository new.
 	a connectionURL: 'http://localhost:8182'.
 	
-   q := GremlinQueryBuilder findWithLabel: 'Smalltalk'.
+   q := GremlinQueryBuilder findVerticesWithLabel: 'Smalltalk'.
    q propertyFilter: 'domaingraph' withValue: 'tinkerpopexample'.
 
    ^ b executeBuilder: q withInterface: a.
